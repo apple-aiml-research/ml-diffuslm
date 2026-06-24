@@ -1,0 +1,9 @@
+/* For licensing see accompanying LICENSE file and LICENSE_DATA. Copyright (C) 2026 Apple Inc. All Rights Reserved. */
+
+.playlist {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 10px 40px 0px 0px;
+}

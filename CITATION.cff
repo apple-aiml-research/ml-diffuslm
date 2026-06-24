@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "Please consider citing our paper if you find this work useful in your research."
+title: "Scaling Properties of Continuous Diffusion Spoken Language Models: Examples"
+repository-code: "https://github.com/apple/ml-diffuslm"
+authors:
+  - family-names: Ramapuram
+    given-names: Jason
+  - family-names: Dhekane
+    given-names: Eeshan Gunesh
+  - family-names: Shidani
+    given-names: Amitis
+  - family-names: Busbridge
+    given-names: Dan
+  - family-names: Mazoure
+    given-names: Bogdan
+  - family-names: Gu
+    given-names: Zijin
+  - family-names: Webb
+    given-names: Russ
+  - family-names: Likhomanenko
+    given-names: Tatiana
+  - family-names: Jaitly
+    given-names: Navdeep
+preferred-citation:
+  type: article
+  title: "Scaling Properties of Continuous Diffusion Spoken Language Models"
+  year: 2026
+  journal: "Interspeech"
+  url: "https://arxiv.org/abs/2604.24416"
+  authors:
+    - family-names: Ramapuram
+      given-names: Jason
+    - family-names: Dhekane
+      given-names: Eeshan Gunesh
+    - family-names: Shidani
+      given-names: Amitis
+    - family-names: Busbridge
+      given-names: Dan
+    - family-names: Mazoure
+      given-names: Bogdan
+    - family-names: Gu
+      given-names: Zijin
+    - family-names: Webb
+      given-names: Russ
+    - family-names: Likhomanenko
+      given-names: Tatiana
+    - family-names: Jaitly
+      given-names: Navdeep

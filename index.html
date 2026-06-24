@@ -1,0 +1,260 @@
+<!-- For licensing see accompanying LICENSE file and LICENSE_DATA. Copyright (C) 2026 Apple Inc. All Rights Reserved. -->
+
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Brief description goes here">
+
+        <title>Scaling Properties of Continuous Diffusion Spoken Language Models</title>
+
+        <link rel="icon" href="./assets/favicon.png" type="image/png">
+        <link rel="stylesheet" href="./assets/style.css">
+    </head>
+
+    <body>
+        <header>
+            <div class="container fade-in">
+                <h1>Scaling Properties of Continuous Diffusion Spoken Language Models</h1>
+                <nav>
+                    <ul class="links">
+                        <li>
+                            <img src="./assets/apple-icon.svg" />
+                            <a href="https://machinelearning.apple.com/research/scaling-properties-continuous-diffusion" target="_blank">Paper</a>
+                        </li>
+                        <li>
+                            <img src="./assets/arxiv-icon.svg" />
+                            <a href="https://arxiv.org/pdf/2604.24416" target="_blank">arXiv</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <section class="sub-header fade-in">
+            <div class="container">
+                <nav>
+                    <ul class="links">
+                        <li><a href="https://openreview.net/profile?id=~Jason_Ramapuram1" target="_blank">Jason Ramapuram*</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Eeshan_Gunesh_Dhekane1" target="_blank">Eeshan Gunesh Dhekane*</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Amitis_Shidani1" target="_blank">Amitis Shidani*</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Dan_Busbridge1" target="_blank">Dan Busbridge</a></li>
+                        <li><a href="https://scholar.google.com/citations?user=NaxShlcAAAAJ&hl=en" target="_blank">Bogdan Mazoure</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Zijin_Gu1" target="_blank">Zijin Gu</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Russell_Webb1" target="_blank">Russ Webb</a></li>
+                        <li><a href="https://github.com/tlikhomanenko/tlikhomanenko" target="_blank">Tatiana Likhomanenko&#8225</a></li>
+                        <li><a href="https://openreview.net/profile?id=~Navdeep_Jaitly1" target="_blank">Navdeep Jaitly&#8225</a></li>
+                    </ul>
+                </nav>
+                <div>
+                    <p>Apple</p>
+                    <p>* core contributor, &#8225 core advising</p>
+                </div>
+            </div>
+        </section>
+
+        <main>
+            <div class="container fade-in">
+                <h2><a href="#abstract" id="abstract">Abstract</a></h2>
+                <p>
+                    Speech-only spoken language models (SLMs) lag behind text and text-speech models in performance, with recent discrete autoregressive (AR) SLMs indicating significant computational and data demands to match text models. 
+                    Since discretizing continuous speech for AR creates bottlenecks, we explore whether continuous diffusion (CD) SLM is more viable. 
+                    To quantify the linguistic quality of SLMs, we introduce the phoneme Jensen-Shannon divergence (pJSD) metric. 
+                    Our analysis reveals CD SLMs, mirroring AR behavior, exhibit scaling laws for validation loss and pJSD, and show optimal token-to-parameter ratios decreasing as compute scales. 
+                    However, for the latter, loss becomes insensitive to choice of data and model sizes, showing potential for fast inference. 
+                    Scaling CD SLMs to 16B parameters with tens of millions of hours of conversational data enables generation of emotive, prosodic, multi-speaker, multilingual speech, though achieving long-form coherence remains a significant challenge.
+                </p>
+                <table border="0" style="border-collapse: collapse; border: none;">
+                    <tr style="border: none;">
+                    <td style="border: none; padding: 10px;">
+                        <img src="./assets/isoflop.png" width="400" alt="Isoflop Plot"/>
+                    </td>
+                    <td style="border: none; padding: 10px;">
+                        <img src="./assets/curvature.png" width="400" alt="Сurvature Plot"/>
+                    </td>
+                    </tr>
+                </table>
+                <p style="text-align: center;">
+                    <b>Left:</b> Scaling law fit for validation loss. Training (•) and testing (×) points are shown alongside compute-optimal points (★).
+                    <b>Right:</b> The curvature 𝜅 of isoFLOPs at their optima decreases as compute increases: flattening corresponds to approximately 2 orders of magnitude expansion in the range of model (Δ𝑁 ) and dataset (Δ𝐷) sizes yielding a loss within 𝜖 of the optimum 𝐿*. Thus, higher computes allow near-optimal performance across a much wider variety of parameter-to-data allocations, opening up an efficient inference frontier.
+                </p>
+            </div>
+
+            <div class="container fade-in">
+                <h2><a href="#results" id="results">Results</a></h2>
+                <p>
+                    <ol>
+                        <li><i>(Known trend)</i> Validation loss follows Chinchilla-style scaling laws.</li>
+                        <li><i>(Known trend)</i> The optimal token-to-parameter ratio is compute-dependent, decreasing as the compute budget scales.</li>
+                        <li><i>(New trend)</i> Higher computes allow near-optimal performance across a much wider variety of parameter-to-data allocations, opening up possibility for fast inference.</li>
+                        <li><i>(Known trend)</i> The pJSD metric demonstrates that learned "languageness" follows scaling laws, mirroring discrete AR models (sBLIMP, sStoryCloze). Thus, pJSD provides a viable sampling-based evaluation tool for generative models that do not offer the easily factorized likelihoods of autoregressive architectures.</li>
+                        <li><i>(New trend)</i> Unlike prior work on AR SLMs, we also analyze standard perceptual quality metrics. We find they <b>do not</b> exhibit scaling laws (this behavior is aligned with their poor correlation to human mean opinion scores). However, two out of four Meta Audiobox Aesthetics components (content enjoyment and content understanding) <b>do</b> scale predictably.</li>
+                        <li><i>(New trend)</i> Metrics without scaling laws generally saturate near their real-data baselines. In contrast, for certain metrics, our best scaling fits suggest that real-data baselines remain unreachable at any compute budget.</li>
+                    </ol>
+                    <p>
+                        Finally, we scale CD SLMs to a 16B parameter model trained on tens of millions of hours of conversational speech.
+                        While at that scale our model generates multi-speaker multilingual conversations with rich emotions and prosody, achieving long-form linguistic coherence remains a significant challenge.
+                        <b>This shortfall suggests that given current compute budgets and available speech data, further scaling of SLMs is impractical unless a new speech representation or modeling paradigm emerge, or we pivot to text-speech models.</b>
+                        Note, that we focus exclusively on pretraining, where foundational representations emerge; while post-training is highly effective for steering and refining behavior, there is no evidence it can instill basic linguistic coherence if the base model lacks it.
+                    </p>
+                </p>
+            </div>
+
+            <div class="container fade-in">
+                <h2><a href="#generation" id="generation">Generated samples (16B model)</a></h2>
+                <p>
+                We show generation results for 16B model trained on tens of millions of hours of conversational speech data with 300s of context generating a 60s continuation.
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>URL of audio used for context (300s)</th>
+                                <th>Generated continuation (60s)</th>
+                                <th>Generated continuation characteristics</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://media.xyzcdn.net/liG7nPWpzuu3KvKoW3bT6EqQNtjP.m4a" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_1-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_1-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_1-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_1-4.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_1-5.wav" type="audio/wav">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Chinese language with several speakers, some backchanneling, some laughing, some overlapping and expressive speech</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://ia801508.us.archive.org/20/items/desemission-191/desemission%20191.mp3" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_2-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_2-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_2-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_2-4.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_2-5.wav" type="audio/wav">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> French language with several speakers, some backchanneling, some laughing, some overlapping and expressive speech, some background sounds / music</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://d3ctxlq1ktw2nl.cloudfront.net/staging/2021-06-16/9d049b05f6c45dcb40ee9abfe07a3c78.m4a" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_3-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_3-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_3-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_3-4.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> English (UK) language with several speakers, some backchanneling, and expressive speech</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="http://www.talkzone.com/uploads/audio/nderadio140519a.mp3" target="_blank">audio url (16-21min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_4-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_4-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> English (US) language with some backchanneling and different mics and audio quality</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://dcs.megaphone.fm/SONORO5264024945.mp3" target="_blank">audio url (6:30-12:30min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_5-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_5-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_5-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_5-4.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Spanish language with several speakers, some backchanneling, some overlapping and expressive speech, laughing</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="http://www.curwensvillechristian.org/messages/revelation/lesson10.mp3" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_6.wav" type="audio/wav">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> English (US) language keeping poor audio quality </td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://traffic.libsyn.com/secure/readyaimempire/Ep238.mp3" target="_blank">audio url (16-21min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_7-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_7-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_7-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> English (US) language with telephone-studio conversation, some backchanneling, some laughing, and expressive speech</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_8-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_8-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_8-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_8-4.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_8-5.wav" type="audio/wav">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Bilingual (Armenian and accented Russian) language, keeping some sounds / music in background, expressive speech, some laughing </td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://www.baus.org/en/wp-content/uploads/2020/09/40-Lesson-10-4-Pt-2.mp3" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_9-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_9-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_9-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_9-4.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_9-5.wav" type="audio/wav">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Bilingual (Enlgish and Pali) language, background sounds</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="http://www.mjminjax.com/2012_complete_mp3/2012-12-31_Lessons_And_Carols_complete_96" target="_blank">audio url (14-20min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_10-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_10-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> English (US) language, keeping environmental echo</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="http://www.mjminjax.com/2012_complete_mp3/2012-12-31_Lessons_And_Carols_complete_96" target="_blank">audio url (9-15min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_11-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_11-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Keeping singing and some music</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://d3ctxlq1ktw2nl.cloudfront.net/staging/2022-5-30/31544d82-e2ff-252b-a5ea-f284deefd23c.mp3" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_12-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_12-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_12-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_12-4.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_12-5.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Bilingual (Japanese and English) language, several speakers, code-switching with different mics and some backchanneling</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://d3ctxlq1ktw2nl.cloudfront.net/staging/2022-4-29/b32f461d-2117-a139-d025-d4365d51bf36.mp3" target="_blank">audio url (25-31min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_13-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_13-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_13-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Russian language with several speakers, studio / telephone mics, some backchanneling, some overlapping speech</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://d3ctxlq1ktw2nl.cloudfront.net/staging/2022-4-29/b32f461d-2117-a139-d025-d4365d51bf36.mp3" target="_blank">audio url (21:30-27:30min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_14-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_14-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_14-3.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Russian language with several speakers, studio / telephone mics, some backchanneling, some overlapping speech, some laughing</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="http://www.musicoide.unb.br/images/Musicoide-T02P02.mp3" target="_blank">audio url (0-6min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_15-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_15-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> Portuguese (Brazil) language with several speakers, some backchanneling</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                              <td style="text-align: left;vertical-align:middle;width: 200px"> <a href="https://podcasts.captivate.fm/media/a27ea5ea-4f99-4bd4-a748-dd1d55c38404/79.mp3" target="_blank">audio url (14-20min)</a> </td>
+                              <td style="text-align: center"><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_16-1.wav" type="audio/wav">Your browser does not support the audio element.</audio><audio controls="controls" style="width: 200px;"><source src="samples/audio/generation_16-2.wav" type="audio/mpeg">Your browser does not support the audio element.</audio></td>
+                              <td style="text-align: left;vertical-align:middle;width: 500px"> German language with one speaker</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container fade-in">
+                <h2><a href="#bibtex" id="bibtex">BibTeX</a></h2>
+                <pre><code>
+                    @article{ramapuram2026scaling,
+                        title={Scaling Properties of Continuous Diffusion Spoken Language Models},
+                        author={Ramapuram, Jason and Dhekane, Eeshan Gunesh and Shidani, Amitis and Busbridge, Dan and Mazoure, Bogdan and Gu, Zijin and Webb, Russ and Likhomanenko, Tatiana and Jaitly, Navdeep},
+                        journal={Interspeech},
+                        year={2026}
+                    }
+                </code></pre>
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <copy>
+                    <p> All generated speech samples provided here are licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-Noncommercial-Nonderivatives 4.0 International License</a> </p>
+                    
+                    <p> Copyright © <span class="footer-year"></span> Apple Inc. All rights reserved. </p>
+                </copy>
+            </div>
+        </footer>
+
+        <script src="./assets/script.js" defer></script>
+    </body>
+</html>
